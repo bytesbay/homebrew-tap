@@ -1,0 +1,36 @@
+# Points Casks/pi-gpui.rb at the latest Pi GPUI release. Runs every few hours
+# and on demand (Actions > Update cask > Run workflow).
+name: Update cask
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pi-gpui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update to the latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release view --repo bytesbay/pi-gpui --json tagName -q .tagName)
+          version=${tag#v}
+          current=$(sed -n 's/^  version "\(.*\)"/\1/p' Casks/pi-gpui.rb)
+          if [ "$version" = "$current" ]; then
+            echo "Already at $version"
+            exit 0
+          fi
+          url="https://github.com/bytesbay/pi-gpui/releases/download/$tag/Pi-GPUI-$version-aarch64.zip"
+          sha=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
+          sed -i "s/^  version \".*\"/  version \"$version\"/; s/^  sha256 \".*\"/  sha256 \"$sha\"/" Casks/pi-gpui.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "pi-gpui $version"
+          git push
