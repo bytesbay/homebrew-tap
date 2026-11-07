@@ -18,7 +18,5 @@ cask "pi-gpui" do
 
   app "Pi GPUI.app"
 
-  zap trash: [
-    "~/Library/Application Support/pi-gpui",
-  ]
+  zap trash: "~/Library/Application Support/pi-gpui"
 end
