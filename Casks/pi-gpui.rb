@@ -1,6 +1,6 @@
 cask "pi-gpui" do
-  version "0.2.9"
-  sha256 "47734288d5e555858ee2495b937c8b4b96761dc7342307a1e3b2148b9f0fd5d3"
+  version "0.2.11"
+  sha256 "de4ae32fbcd5eda2dcb2e755bb18098468776976c1b3f022e6643006ef62075f"
 
   url "https://github.com/bytesbay/pi-gpui/releases/download/v#{version}/Pi-GPUI-#{version}-aarch64.zip"
   name "Pi GPUI"
